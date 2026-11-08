@@ -1,0 +1,63 @@
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[project]
+name = "nms-direct-link"
+version = "0.1.0"
+description = "No Man's Sky Direct Link — a local MCP server that gives your AI assistant full visibility into your gameplay by reading your own save file. Read-only, offline, ToS-safe."
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.11"
+authors = [{ name = "Brian Scott" }]
+keywords = ["no-mans-sky", "mcp", "model-context-protocol", "save-file", "copilot", "claude"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: End Users/Desktop",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: Microsoft :: Windows",
+  "Operating System :: MacOS",
+  "Operating System :: POSIX :: Linux",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Games/Entertainment",
+]
+dependencies = [
+  "mcp>=2.0",
+  "lz4>=4.3",
+  "httpx>=0.27",
+  "pydantic>=2.6",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "pytest-asyncio>=0.23", "ruff>=0.6", "build>=1.2"]
+
+[project.scripts]
+nms-direct-link = "nms_direct_link.server:main"
+
+[project.urls]
+Homepage = "https://github.com/Zeekeey-jpeg/No-Mans-Sky-Direct-Link"
+Issues = "https://github.com/Zeekeey-jpeg/No-Mans-Sky-Direct-Link/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/nms_direct_link"]
+
+[tool.hatch.build.targets.sdist]
+include = ["src/nms_direct_link", "tests", "README.md", "LICENSE", "CHANGELOG.md"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+addopts = "-q"
+
+[tool.ruff]
+line-length = 110
+target-version = "py311"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "W"]
+ignore = ["E501"]

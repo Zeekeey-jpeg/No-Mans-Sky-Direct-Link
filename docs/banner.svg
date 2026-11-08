@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="320" viewBox="0 0 1200 320" role="img" aria-label="No Man's Sky Direct Link">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b0f2a"/>
+      <stop offset="0.45" stop-color="#1b1f5a"/>
+      <stop offset="0.75" stop-color="#5b1e6b"/>
+      <stop offset="1" stop-color="#e2592b"/>
+    </linearGradient>
+    <radialGradient id="sun" cx="0.82" cy="0.78" r="0.35">
+      <stop offset="0" stop-color="#ffd27a" stop-opacity="0.95"/>
+      <stop offset="0.35" stop-color="#ff8a3d" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#ff8a3d" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="planet" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#7be0ff"/>
+      <stop offset="1" stop-color="#1c3f8a"/>
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="6" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="1200" height="320" fill="url(#sky)"/>
+  <rect width="1200" height="320" fill="url(#sun)"/>
+  <g fill="#ffffff" opacity="0.85">
+    <circle cx="60" cy="40" r="1.4"/><circle cx="140" cy="120" r="1"/><circle cx="210" cy="60" r="1.8"/><circle cx="300" cy="200" r="1.1"/>
+    <circle cx="380" cy="30" r="1.3"/><circle cx="470" cy="150" r="0.9"/><circle cx="560" cy="80" r="1.6"/><circle cx="640" cy="240" r="1"/>
+    <circle cx="720" cy="40" r="1.2"/><circle cx="810" cy="110" r="1.5"/><circle cx="900" cy="30" r="1"/><circle cx="980" cy="170" r="1.3"/>
+    <circle cx="1060" cy="70" r="1.7"/><circle cx="1130" cy="140" r="1"/><circle cx="1180" cy="40" r="1.2"/><circle cx="90" cy="260" r="1"/>
+    <circle cx="250" cy="290" r="1.4"/><circle cx="420" cy="270" r="0.9"/><circle cx="700" cy="290" r="1.1"/><circle cx="860" cy="260" r="1.3"/>
+  </g>
+  <circle cx="1010" cy="250" r="120" fill="url(#planet)" opacity="0.95"/>
+  <ellipse cx="1010" cy="250" rx="190" ry="34" fill="none" stroke="#ffd9b0" stroke-opacity="0.55" stroke-width="6" transform="rotate(-18 1010 250)"/>
+  <ellipse cx="1010" cy="250" rx="160" ry="24" fill="none" stroke="#ffffff" stroke-opacity="0.25" stroke-width="2" transform="rotate(-18 1010 250)"/>
+  <g font-family="Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif" fill="#ffffff">
+    <text x="70" y="128" font-size="22" letter-spacing="10" opacity="0.8">A READ-ONLY MCP SERVER FOR</text>
+    <text x="68" y="196" font-size="64" font-weight="700" letter-spacing="6" filter="url(#glow)">NO MAN'S SKY</text>
+    <text x="70" y="250" font-size="40" font-weight="300" letter-spacing="14">DIRECT LINK</text>
+  </g>
+  <g font-family="Consolas, Menlo, monospace" fill="#ffe3c2" font-size="16" opacity="0.9">
+    <text x="72" y="292">◆ save.hg → your AI assistant · units · nanites · location · tech · fleet · discoveries</text>
+  </g>
+</svg>
