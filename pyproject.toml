@@ -10,7 +10,7 @@ readme = "README.md"
 license = { file = "LICENSE" }
 requires-python = ">=3.11"
 authors = [{ name = "Brian Scott" }]
-keywords = ["no-mans-sky", "mcp", "model-context-protocol", "save-file", "copilot", "claude"]
+keywords = ["no-mans-sky", "nomanssky", "nms", "mcp", "mcp-server", "model-context-protocol", "save-file", "copilot", "claude", "ai-assistant", "game-companion", "hello-games"]
 classifiers = [
   "Development Status :: 3 - Alpha",
   "Intended Audience :: End Users/Desktop",

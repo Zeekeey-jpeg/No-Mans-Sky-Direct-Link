@@ -11,8 +11,10 @@
   <a href="LICENSE"><img alt="MIT" src="https://img.shields.io/badge/license-MIT-blue"></a>
 </p>
 
+# No Man's Sky Direct Link — MCP server for No Man's Sky
+
 <h3 align="center">Give your AI assistant full visibility into your No Man's Sky game.</h3>
-<p align="center">A local <a href="https://modelcontextprotocol.io">Model Context Protocol</a> server that reads <em>your own</em> save file and answers questions like<br>
+<p align="center">A local <a href="https://modelcontextprotocol.io">Model Context Protocol</a> (MCP) server for <strong>No Man's Sky</strong> that reads <em>your own</em> save file and answers questions like<br>
 <em>"How many nanites do I have and what's the fastest way to 3,000?" · "Where did I leave my Chromatic Metal?" · "Is anything on my ship damaged?" · "What are the glyphs for my base?"</em></p>
 
 ---
