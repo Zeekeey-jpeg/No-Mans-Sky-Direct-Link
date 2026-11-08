@@ -119,16 +119,16 @@ def test_inventories_and_modules(env_save_dir, mapping):
 def test_find_items(env_save_dir, mapping):
     snap = load_snapshot(newest_save().path, mapping)
     hits = snap.find_items("ferrite")
-    assert {inv.owner for inv, _ in hits} == {"exosuit", "exosuit cargo"}
-    assert sum(s.amount for _, s in hits) == 1700
+    assert {inv.owner for inv, _ in hits} == {"exosuit", "exosuit cargo", "grave"}
+    assert sum(s.amount for _, s in hits) == 1799
     assert snap.find_items("gold")[0][0].owner == "storage 1"
 
 
 def test_discovery_backlog_counts_only_own(env_save_dir, mapping):
     snap = load_snapshot(newest_save().path, mapping)
     b = snap.discovery_backlog()
-    assert b["total_records"] == 5
-    assert b["own_records"] == 4
+    assert b["total_records"] == 9
+    assert b["own_records"] == 8
     assert b["pending_upload"] == 3
     assert b["pending_by_type"] == {"Animal": 1, "Planet": 1, "Mineral": 1} or set(b["pending_by_type"]) == {"Animal", "Planet", "Mineral"}
     assert b["pending_systems"] == 1

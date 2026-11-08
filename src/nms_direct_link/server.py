@@ -67,6 +67,14 @@ def _n(v: int | float | None) -> str:
     return f"{v:,}" if isinstance(v, (int, float)) else "?"
 
 
+
+def _ly(v) -> str:
+    """Distances come from region (voxel) coordinates: 0 between different stars means 'same region'."""
+    if v is None:
+        return "? ly"
+    return "same region" if v == 0 else f"~{v:,} ly"
+
+
 def _age(snap: SaveSnapshot) -> str:
     if not snap.modified:
         return "unknown"
@@ -131,7 +139,7 @@ async def nms_get_player_state(params: FormatInput) -> str:
             f"- **Play time:** {s['play_time_hours']} h · **Nexus access:** {'yes' if snap.has_nexus_access else 'no'} · **Glyphs known:** {snap.known_glyphs}/16",
             f"- **Location:** {loc.galaxy_name()}, planet index {loc.planet} of system {loc.system} · portal `{loc.portal()}` · booster `{loc.booster()}`",
             f"- **Glyph sequence:** {' · '.join(loc.glyph_names())}",
-            f"- **Distance to galactic centre:** ~{_n(round(loc.distance_to_centre_ly()))} ly",
+            f"- **Distance to galactic centre:** {_ly(round(loc.distance_to_centre_ly()))}",
             f"- **Health:** {snap.health.get('health')} · shield {snap.health.get('shield')} · ship health {snap.health.get('ship_health')}",
             f"- **Current mission:** `{snap.current_mission().get('id')}`",
             "",
@@ -164,19 +172,19 @@ async def nms_get_location(params: FormatInput) -> str:
     data = {"current": here.to_dict(), "previous": prev.to_dict() if prev else None, "freighter": fr.to_dict() if fr else None,
             "bases": bases, "teleporters": tele}
     lines = ["# Location", "", f"**Now:** {here}", f"- glyphs: {' · '.join(here.glyph_names())}",
-             f"- voxel ({here.x}, {here.y}, {here.z}) system {here.system} · ~{_n(round(here.distance_to_centre_ly()))} ly from centre"]
+             f"- voxel ({here.x}, {here.y}, {here.z}) system {here.system} · {_ly(round(here.distance_to_centre_ly()))} from centre"]
     if prev:
-        lines.append(f"**Previous:** {prev} (~{_n(round(here.distance_ly(prev)))} ly away)")
+        lines.append(f"**Previous:** {prev} ({_ly(round(here.distance_ly(prev)))} away)")
     if fr:
-        lines.append(f"**Freighter:** {fr} (~{_n(round(here.distance_ly(fr)))} ly away)")
+        lines.append(f"**Freighter:** {fr} ({_ly(round(here.distance_ly(fr)))} away)")
     if bases:
         lines += ["", "## Bases"]
         for b in bases:
-            lines.append(f"- **{b['name']}** ({b['type']}, {b['objects']} parts) — {b['address']['portal'] if b['address'] else '?'} · ~{_n(b.get('distance_ly'))} ly")
+            lines.append(f"- **{b['name']}** ({b['type']}, {b['objects']} parts) — {b['address']['portal'] if b['address'] else '?'} · {_ly(b.get('distance_ly'))}")
     if tele:
         lines += ["", "## Teleporter network"]
         for t in tele[:25]:
-            lines.append(f"- {t['name']} [{t['type']}] — {t['address']['portal'] if t['address'] else '?'} · ~{_n(t.get('distance_ly'))} ly")
+            lines.append(f"- {t['name']} [{t['type']}] — {t['address']['portal'] if t['address'] else '?'} · {_ly(t.get('distance_ly'))}")
         if len(tele) > 25:
             lines.append(f"- … {len(tele) - 25} more (use response_format='json')")
     return _fmt(data, params.response_format, "\n".join(lines))
@@ -226,8 +234,8 @@ async def nms_convert_coordinates(params: ConvertInput) -> str:
         f"- signal booster: `{addr.booster()}`",
         f"- voxel: x={addr.x} y={addr.y} z={addr.z} · system {addr.system} · planet {addr.planet} · {addr.galaxy_name()}",
         f"- packed: {addr.packed()} (0x{addr.packed():X})",
-        f"- ~{_n(round(addr.distance_to_centre_ly()))} ly from the galactic centre"
-        + (f" · ~{_n(data['distance_from_player_ly'])} ly from you" if "distance_from_player_ly" in data else ""),
+        f"- {_ly(round(addr.distance_to_centre_ly()))} from the galactic centre"
+        + (f" · {_ly(data['distance_from_player_ly'])} from you" if "distance_from_player_ly" in data else ""),
     ])
     return _fmt(data, params.response_format, md)
 
@@ -476,6 +484,15 @@ async def nms_get_community_mission(params: CommunityInput) -> str:
         return _err(f"community mission lookup failed ({type(exc).__name__}). Try again later.")
     md = f"# Community mission #{data['mission_id']} — tier {data['current_tier']}/{data['total_tiers']} at {data['percentage']}%"
     return _fmt(data, params.response_format, md)
+
+
+from . import tools_more  # noqa: E402
+
+tools_more.register(mcp, store, FormatInput, ResponseFormat, ToolAnnotations, READ_ONLY, _fmt, _err, _n, _snap, _ly)
+
+from . import tools_shops  # noqa: E402
+
+tools_shops.register(mcp, store, ResponseFormat, ToolAnnotations, _fmt, _err, _n, _snap, _ly)
 
 
 # ----------------------------------------------------------------------------

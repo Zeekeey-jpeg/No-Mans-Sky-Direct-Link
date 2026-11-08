@@ -64,4 +64,10 @@ class SaveStore:
             log.info("loading save %s (%s)", sf.path.name, sf.label)
             self._snapshot = load_snapshot(sf.path, self.mapping)
             self._snapshot_key = key
+            try:
+                from . import history
+
+                history.record(self._snapshot)
+            except Exception as exc:  # noqa: BLE001 - history is best-effort and never blocks a read
+                log.warning("could not record session history: %s", exc)
         return self._snapshot

@@ -3,6 +3,23 @@
 All notable changes to No Man's Sky Direct Link are recorded here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses semantic versioning.
 
+## [0.2.0] — 2026-11-08
+
+Full parity with existing No Man's Sky MCP tooling, the Shop Scanner, then everything else the save holds. 34 tools, 3 resources.
+
+### Added
+- **Shop Scanner**: `nms_look_at_screen` (game-window screenshot for the assistant to read), `nms_read_screenshots` (Steam F12 shots), `nms_log_shop`, `nms_find_in_shops`, `nms_get_shops_here`. Local SQLite store; `Pillow` dependency.
+- Galaxy atlas from discovery records with planet **biomes** and infestation decoded, custom names, fauna/flora/mineral counts per planet.
+- `nms_search_planets`, `nms_whats_nearby`, `nms_get_system`, `nms_get_base`, `nms_get_galaxy_stats`.
+- `nms_plan_route`: nearest-neighbour + 2-opt ordering, warp-range jump counts, Dijkstra hops through known systems, teleporter shortcut suggestions, round trips.
+- `nms_get_hangar` (ships, corvettes, squadron, workers), `nms_get_companions` (pets, eggs, arena team), `nms_get_player_stats`, `nms_get_standing` (race and guild reputation, words per language), `nms_get_trade_log` (crashed markets), `nms_get_records` (Wonders), `nms_get_waypoints` (mission markers, item grave), `nms_get_timers` (what's ready).
+- Session history (`history.jsonl` in the user cache, opt-out `NMS_NO_HISTORY=1`) with `nms_get_session_changes` and `nms_get_progress_history`.
+- Resources `nms://galaxy/stats` and `nms://bases`.
+- README before-and-after comparison chart.
+
+### Changed
+- Distances between different stars in one region show as "same region" instead of 0 ly.
+
 ## [0.1.0] — 2026-11-08
 
 First public release. Read-only, offline, save-file based.

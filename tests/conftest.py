@@ -98,6 +98,36 @@ def readable_save() -> dict:
                 ],
                 "MissionProgress": [{"Mission": "^DONE", "Progress": -1, "Seed": 0, "Data": 0}, {"Mission": "^ACTIVE", "Progress": 2, "Seed": 9, "Data": 0}],
                 "MissionRecurrences": [{"MissionID": "^DM_QS_REWARDS", "RecurrenceDeadline": NOW + 3600}],
+                "Stats": [
+                    {"GroupId": "^GLOBAL_STATS", "Address": 0, "Stats": [
+                        {"Id": "^DIST_WARP", "Value": {"IntValue": 42}}, {"Id": "^ALIENS_MET", "Value": {"IntValue": 9}},
+                        {"Id": "^TRA_STANDING", "Value": {"IntValue": 6}}, {"Id": "^WAR_STANDING", "Value": {"IntValue": 2}}, {"Id": "^BUI_STANDING", "Value": {"IntValue": 3}},
+                        {"Id": "^EX_HOT_WALK", "Value": {"FloatValue": 12.5}}, {"Id": "^TUTORIAL", "Value": {}}]},
+                    {"GroupId": "^TELEMETRY_STATS", "Address": 0, "Stats": [{"Id": "^DEATHS", "Value": {"IntValue": 1}}]},
+                ],
+                "KnownWordGroups": [{"Group": "^TRA_A", "Races": [True, False, True, False, False, False, False, False, False]},
+                                    {"Group": "^TRA_B", "Races": [True, False, False, False, False, False, False, False, False]}],
+                "TradingSupplyData": [
+                    {"GalacticAddress": "0x11AB00FDE0C064", "Supply": 0.001, "Demand": -3.0, "Product": "^LAND3", "Timestamp": 3600, "IsProduct": False},
+                    {"GalacticAddress": "0x11AB00FDE0C064", "Supply": 0.0, "Demand": 0.0, "Product": "^NANOTUBES", "Timestamp": 7000, "IsProduct": True},
+                    {"GalacticAddress": 0, "Supply": 0.0, "Demand": 0.0, "Product": "^", "Timestamp": 0, "IsProduct": False},
+                ],
+                "WonderCreatureRecords": [{"GenerationID": ["0x11AB00FDE0C064", "0x1"], "WonderStatValue": 5.5}],
+                "WonderPlanetRecords": [{"GenerationID": ["0x11AB00FDE0C064", "0x2"], "WonderStatValue": 306.4}],
+                "Pets": [{"CreatureID": "^QUAD_PET", "CustomSpeciesName": "Biscuit", "Biome": {"Biome": "Lush"}, "Predator": False,
+                          "Scale": 1.2, "HasFur": True, "BirthTime": NOW - 50, "UA": "0x11AB00FDE0C064"},
+                         {"CreatureID": "^", "CustomSpeciesName": "^"}],
+                "Eggs": [{"CreatureID": "^"}],
+                "PetBattleTeam": {"TeamMembers": [{"PetIndex": 0}, {"PetIndex": -1}]},
+                "UnlockedPetSlots": [True, True, False],
+                "GalaxyWaypoints": [{"Address": {"VoxelX": 101, "VoxelY": -3, "VoxelZ": -500, "SolarSystemIndex": 12, "PlanetIndex": 0},
+                                     "Type": {"GalaxyWaypointType": "Gameplay_Mission"}, "EventId": "^SE_TEST", "RealityIndex": 0}],
+                "MarkerStack": [{"MissionID": "^ACTIVE", "Event": "^SE_ACTIVE", "GalacticAddress": "0x11AB00FDE0C064",
+                                 "BuildingClass": {"BuildingClass": "DistressSignal"}}],
+                "GraveUniverseAddress": {"RealityIndex": 0, "GalacticAddress": {"VoxelX": 100, "VoxelY": -3, "VoxelZ": -500, "SolarSystemIndex": 427, "PlanetIndex": 1}},
+                "GraveInventory": _inv([_slot("^LAND1", "Substance", 99, 9999)], valid=10),
+                "VisitedSystems": ["0x11AB00FDE0C064", "0x0C00FDE0C065"],
+                "SquadronPilots": [], "SquadronUnlockedPilotSlots": [False], "NPCWorkers": [], "FreighterFleet": [],
                 "KnownTech": ["^JET1", "^HYPERDRIVE"],
                 "KnownProducts": ["^NANOTUBES"],
                 "KnownRefinerRecipes": ["^REFINERECIPE_1"],
@@ -116,7 +146,11 @@ def readable_save() -> dict:
                 "ReserveManaged": 0,
                 "Store": {
                     "Record": [
-                        {"DD": {"UA": 0x11AB00FDE0C064, "DT": "Planet"}, "FL": {"C": 1, "U": 0}, "OWS": {"UID": "owner-1", "TS": NOW}},
+                        {"DD": {"UA": 0x11AB00FDE0C064, "DT": "Planet", "VP": ["0xABC", 0x10004]}, "FL": {"C": 1, "U": 0}, "DM": {"CN": "Verdant Prime"}, "OWS": {"UID": "owner-1", "USN": "tester", "TS": NOW}},
+                        {"DD": {"UA": 0x1AB00FDE0C064, "DT": "SolarSystem", "VP": ["0xDEF"]}, "FL": {"C": 1, "U": 1}, "DM": {"CN": "Testa Major"}, "OWS": {"UID": "owner-1", "USN": "tester", "TS": NOW}},
+                        {"DD": {"UA": 0x21AB00FDE0C064, "DT": "Planet", "VP": ["0x123", 4]}, "FL": {"C": 1, "U": 1}, "OWS": {"UID": "owner-1", "TS": NOW}},
+                        {"DD": {"UA": 0x00C00FDE0C065, "DT": "SolarSystem"}, "FL": {"C": 1, "U": 1}, "OWS": {"UID": "owner-1", "USN": "tester", "TS": NOW}},
+                        {"DD": {"UA": 0x10C00FDE0C065, "DT": "Planet", "VP": ["0x9", 13]}, "FL": {"C": 1, "U": 1}, "OWS": {"UID": "owner-1", "TS": NOW}},
                         {"DD": {"UA": 0x11AB00FDE0C064, "DT": "Animal"}, "FL": {"C": 1, "U": 0}, "OWS": {"UID": "owner-1", "TS": NOW}},
                         {"DD": {"UA": 0x11AB00FDE0C064, "DT": "Animal"}, "FL": {"C": 1, "U": 1}, "OWS": {"UID": "owner-1", "TS": NOW}},
                         {"DD": {"UA": 0x11AB00FDE0C064, "DT": "Flora"}, "FL": {"C": 1, "U": 1}, "OWS": {"UID": "someone-else", "TS": NOW}},
@@ -167,3 +201,12 @@ def env_save_dir(monkeypatch, save_dir: Path) -> Path:
     monkeypatch.delenv("NMS_SAVE_FILE", raising=False)
     monkeypatch.delenv("NMS_SAVE_SLOT", raising=False)
     return save_dir
+
+
+@pytest.fixture(autouse=True)
+def _isolate_history(monkeypatch, tmp_path):
+    """Never let tests write to the real user cache."""
+    monkeypatch.setenv("NMS_HISTORY_DIR", str(tmp_path / "history"))
+    monkeypatch.setenv("NMS_SHOP_DB", str(tmp_path / "shops.sqlite"))
+    monkeypatch.setenv("NMS_SCREENSHOT_DIR", str(tmp_path / "shots"))
+    monkeypatch.delenv("NMS_NO_HISTORY", raising=False)
