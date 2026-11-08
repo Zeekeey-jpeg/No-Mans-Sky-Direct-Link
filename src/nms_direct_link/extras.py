@@ -127,6 +127,7 @@ def trade_log(snap: SaveSnapshot) -> dict[str, Any]:
         a = _addr(t.get("GalacticAddress"))
         if a is None:
             continue
+        a = UniverseAddress(a.galaxy, a.x, a.y, a.z, a.system, 0)  # markets are per system, not per planet
         key = a.packed()
         entry = systems.setdefault(key, {"address": a, "products": []})
         ts = int(t.get("Timestamp", 0) or 0)

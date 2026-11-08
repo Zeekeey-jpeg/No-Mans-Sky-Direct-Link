@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "nms-direct-link"
-version = "0.2.0"
+version = "0.3.0"
 description = "No Man's Sky Direct Link — a local MCP server that gives your AI assistant full visibility into your gameplay by reading your own save file. Read-only, offline, ToS-safe."
 readme = "README.md"
 license = { file = "LICENSE" }

@@ -7,6 +7,7 @@ Logging goes to stderr so stdout stays clean for the protocol.
 from __future__ import annotations
 
 import argparse
+import asyncio
 import json
 import logging
 import sys
@@ -494,6 +495,10 @@ from . import tools_shops  # noqa: E402
 
 tools_shops.register(mcp, store, ResponseFormat, ToolAnnotations, _fmt, _err, _n, _snap, _ly)
 
+from . import tools_station  # noqa: E402
+
+tools_station.register(mcp, ResponseFormat, ToolAnnotations, READ_ONLY, _fmt, _err, _n, _snap, _ly)
+
 
 # ----------------------------------------------------------------------------
 # Resources
@@ -534,6 +539,41 @@ def _self_test(slot: int | None) -> int:
     return 0
 
 
+async def _cli_tools(args: argparse.Namespace) -> int:
+    """Command-line bridge: lets any assistant that can run a command (not just MCP clients) use every tool."""
+    tools = await mcp.list_tools()
+    names = {t.name: t for t in tools}
+    if args.list_tools:
+        for t in sorted(tools, key=lambda t: t.name):
+            first = (t.description or "").strip().splitlines()[0] if t.description else ""
+            print(f"{t.name:28} {first}")
+        return 0
+    name = args.call if args.call.startswith("nms_") else f"nms_{args.call}"
+    if name not in names:
+        print(f"Error: unknown tool '{args.call}'. Run --list-tools.", file=sys.stderr)
+        return 2
+    try:
+        params = json.loads(args.args or "{}")
+    except json.JSONDecodeError as exc:
+        print(f"Error: --args is not valid JSON ({exc})", file=sys.stderr)
+        return 2
+    if not isinstance(params, dict):
+        print("Error: --args must be a JSON object", file=sys.stderr)
+        return 2
+    try:
+        res = await mcp.call_tool(name, {"params": params})
+    except Exception as exc:  # noqa: BLE001 - validation errors become one clean line
+        msg = str(exc).strip().splitlines()
+        print(f"Error: invalid parameters for {name}: {msg[0] if msg else type(exc).__name__}", file=sys.stderr)
+        return 2
+    for block in res.content:
+        if getattr(block, "type", "") == "text":
+            print(block.text)
+        elif getattr(block, "type", "") == "image":
+            print(f"[image: {block.mime_type}, {len(block.data)} base64 chars — open this tool from an MCP client to see it]")
+    return 1 if getattr(res, "is_error", False) else 0
+
+
 def main(argv: list[str] | None = None) -> None:
     ap = argparse.ArgumentParser(prog="nms-direct-link", description="No Man's Sky Direct Link MCP server (read-only)")
     ap.add_argument("--version", action="version", version=f"nms-direct-link {__version__}")
@@ -545,6 +585,9 @@ def main(argv: list[str] | None = None) -> None:
     ap.add_argument("--self-test", action="store_true", help="parse the newest save, print a summary, exit")
     ap.add_argument("--update-mapping", action="store_true", help="download the newest MBINCompiler mapping.json and exit")
     ap.add_argument("--prerelease", action="store_true", help="with --update-mapping: allow pre-release mappings")
+    ap.add_argument("--list-tools", action="store_true", help="print every tool name and its one-line purpose, then exit")
+    ap.add_argument("--call", metavar="TOOL", help="run one tool and print its answer (for assistants that run commands instead of MCP)")
+    ap.add_argument("--args", default="{}", metavar="JSON", help='tool parameters as JSON, e.g. {"target": 3000}')
     ap.add_argument("-v", "--verbose", action="store_true")
     args = ap.parse_args(argv)
 
@@ -557,6 +600,9 @@ def main(argv: list[str] | None = None) -> None:
     logging.basicConfig(level=logging.DEBUG if args.verbose else logging.INFO, stream=sys.stderr,
                         format="%(asctime)s %(levelname)s %(name)s: %(message)s")
 
+    if args.list_tools or args.call:
+        logging.getLogger().setLevel(logging.WARNING)
+        sys.exit(asyncio.run(_cli_tools(args)))
     if args.list_saves:
         saves = list_saves()
         if not saves:

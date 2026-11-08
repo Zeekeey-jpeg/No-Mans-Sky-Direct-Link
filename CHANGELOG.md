@@ -3,6 +3,19 @@
 All notable changes to No Man's Sky Direct Link are recorded here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses semantic versioning.
 
+## [0.3.0] — 2026-11-08
+
+Built around docking and staying in the cockpit. 37 tools, 3 resources.
+
+### Added
+- `nms_station_brief`: dock and ask "what's at this station for me?" Wallet, shops scanned here before, upgrades you need, goods you've already saturated here, and which merchant to open first.
+- `nms_upgrade_plan`: per technology (hyperdrive, shields, weapons, jetpack, life support, hazard, mining beam, scanner, freighter hyperdrive…) installed module classes, free slots (max 3), what to replace, nanite estimate, affordability, and the best match seen in scanned shops.
+- `nms_best_prices`: price memory across every scanned shop: cheapest, highest, times seen, where.
+- Command-line bridge: `--list-tools` and `--call TOOL --args JSON`, so assistants that run commands (Grok desktop, ChatGPT desktop, scripts) can use every tool without MCP.
+
+### Fixed
+- Trade log groups markets per system (it was splitting one market by planet).
+
 ## [0.2.0] — 2026-11-08
 
 Full parity with existing No Man's Sky MCP tooling, the Shop Scanner, then everything else the save holds. 34 tools, 3 resources.

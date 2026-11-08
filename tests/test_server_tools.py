@@ -32,6 +32,7 @@ async def test_tool_registry_names():
         "nms_get_player_stats", "nms_get_standing", "nms_get_trade_log", "nms_get_records", "nms_get_companions",
         "nms_get_hangar", "nms_get_waypoints", "nms_get_timers", "nms_get_session_changes", "nms_get_progress_history",
         "nms_look_at_screen", "nms_read_screenshots", "nms_log_shop", "nms_find_in_shops", "nms_get_shops_here",
+        "nms_station_brief", "nms_upgrade_plan", "nms_best_prices",
     ])
     for t in tools:
         assert t.annotations is not None

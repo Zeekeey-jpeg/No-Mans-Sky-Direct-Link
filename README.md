@@ -5,7 +5,7 @@
 <p align="center">
   <a href="https://github.com/Zeekeey-jpeg/No-Mans-Sky-Direct-Link/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/Zeekeey-jpeg/No-Mans-Sky-Direct-Link/actions/workflows/ci.yml/badge.svg"></a>
   <img alt="Python 3.11+" src="https://img.shields.io/badge/python-3.11%2B-3776AB?logo=python&logoColor=white">
-  <img alt="MCP" src="https://img.shields.io/badge/MCP-34%20tools%20%2B%203%20resources-5b1e6b">
+  <img alt="MCP" src="https://img.shields.io/badge/MCP-37%20tools%20%2B%203%20resources-5b1e6b">
   <img alt="Read-only" src="https://img.shields.io/badge/save%20file-read--only-2ea44f">
   <img alt="Game version" src="https://img.shields.io/badge/NMS-7.13%20Forsaken-e2592b">
   <a href="LICENSE"><img alt="MIT" src="https://img.shields.io/badge/license-MIT-blue"></a>
@@ -21,10 +21,11 @@
 
 ## ◆ TL;DR
 
-- **What it is:** an MCP server (`nms-direct-link`) that decodes `save.hg`, de-obfuscates it with the community key mapping, and exposes **34 tools** (33 read-only) to Claude Desktop, Claude Code, or any MCP client.
+- **What it is:** an MCP server (`nms-direct-link`) that decodes `save.hg`, de-obfuscates it with the community key mapping, and exposes **37 tools** (36 read-only) to Claude Desktop, Claude Code, or any MCP client, and to any assistant that can run a command (Grok, ChatGPT desktop, scripts) through a built-in command-line bridge.
 - **What it never does:** write to your save, touch the game process, read memory, intercept network traffic, or send your data anywhere. The only network call is an optional public community-mission lookup. The only files it writes are a small session-history log and your scanned-shops database, both in your user cache folder.
 - **Install:** `pipx install git+https://github.com/Zeekeey-jpeg/No-Mans-Sky-Direct-Link` then add one JSON block to your MCP client. Saves are found automatically (Steam, GOG).
 - **Check it works:** `nms-direct-link --self-test`
+- **No MCP? No problem:** `nms-direct-link --call station_brief` prints the same answer an MCP client gets.
 
 ```
 save: C:\Users\you\AppData\Roaming\HelloGames\NMS\st_7656…\save.hg (12 min ago)
@@ -49,6 +50,8 @@ The game never saves what a merchant is selling. Direct Link reads it the way yo
 
 Don't want to alt-tab? Press Steam's **F12** at each shop while you play, then ask *"read my screenshots"* once. Every shop gets logged in one go.
 
+**From the cockpit.** Dock, stay in your ship and ask *"what's at this station for me?"*. The **station brief** checks your wallet, every shop you've scanned here before, the upgrades you're missing or running low-class on, and goods you've already crashed the price of here. Then it tells you which merchant to open first. The game doesn't save unscanned stock, so nothing can read a merchant you haven't opened; the brief makes sure you only open the one worth it.
+
 | Tool | What it does |
 |---|---|
 | `nms_look_at_screen` | Screenshot of the No Man's Sky window, handed to your assistant to read |
@@ -56,8 +59,28 @@ Don't want to alt-tab? Press Steam's **F12** at each shop while you play, then a
 | `nms_log_shop` | Remember a merchant's stock, tied to the system you're in |
 | `nms_find_in_shops` | Search every shop you've scanned by item, class, price, currency or merchant, nearest first |
 | `nms_get_shops_here` | Quick view of everything scanned in this system |
+| `nms_station_brief` | From the cockpit: wallet, what you need, what you've seen here, which merchant to open first |
+| `nms_upgrade_plan` | What to upgrade next, max 3 per type, rough nanite cost, best match seen in a scanned shop |
+| `nms_best_prices` | Price memory: cheapest and highest price seen for each item, and where |
 
 Run the game **borderless or windowed** for window capture (exclusive fullscreen can capture black). Only the game window is captured: if it isn't found, nothing is taken unless you explicitly ask for the whole screen. Re-scanning a merchant replaces its earlier list. Capture never touches the game process; it's the same as a screenshot tool or OBS. Images go only to the assistant you are talking to.
+
+---
+
+## ◆ Works with any assistant: command-line bridge
+
+Not every assistant speaks MCP. If yours can run a command on your PC (Grok desktop, ChatGPT desktop, a script, a Stream Deck button), point it at the program and it gets the exact same answers:
+
+```bash
+nms-direct-link --list-tools                                   # every tool and what it does
+nms-direct-link --call station_brief                           # "what's at this station for me?"
+nms-direct-link --call plan_nanites --args "{\"target\": 3000}"   # any tool, any parameters (JSON)
+nms-direct-link --call get_player_state --args "{\"response_format\": \"json\"}"
+```
+
+PowerShell wants single quotes around the JSON: `nms-direct-link --call plan_nanites --args '{"target": 3000}'`.
+
+The `nms_` prefix is optional. Exit codes: 0 success, 1 the tool reported an error, 2 bad tool name or parameters. Where the installer put it: `pipx` → `%USERPROFILE%\.local\bin\nms-direct-link.exe`; a virtual environment → `<venv>\Scripts\nms-direct-link.exe`.
 
 ---
 
@@ -123,6 +146,9 @@ Everything the current No Man's Sky MCP tooling can do, Direct Link does too. Th
 | `nms_log_shop` | Remember a merchant's stock in this system (writes to your local shops database) |
 | `nms_find_in_shops` | "Where did I see an S-class hyperdrive module?" across every scanned shop |
 | `nms_get_shops_here` | Quick view of every shop scanned in this system |
+| `nms_station_brief` | "What's at this station for me?" from the cockpit, without opening a merchant |
+| `nms_upgrade_plan` | Upgrade gaps per technology (free slots, low classes), cost estimate, what you can afford, best seen in shops |
+| `nms_best_prices` | Cheapest and highest price you've seen for each item, and where the cheapest was |
 
 **Help and housekeeping**
 
@@ -234,17 +260,18 @@ This downloads the newest key mapping published with [MBINCompiler](https://gith
 | Version | Scope |
 |---|---|
 | 0.1 | Save-first visibility: state, location, inventories, tech classes, discoveries, fleet, settlements, missions, nanite planning |
-| **0.2** (this) | Parity with existing NMS MCP tooling (routes, planet search, system detail, galaxy stats), **Shop Scanner**, hangar, corvettes, companions, reputation, languages, trade log, wonders, waypoints, timers, session history |
-| **0.3** | Game-data knowledge base extracted from your own game files (recipes, products, technology, blueprint costs) → `nms_craftable`, full item names, mission text |
-| **0.4** | Galaxy intelligence: economy / wealth / conflict / race for **unvisited** systems from the address (community-verified seed algorithms) → `nms_find_systems` |
-| later | Xbox / Game Pass saves; nanite price estimates from your scanned shops; alerts when a timer is ready |
+| 0.2 | Parity with existing NMS MCP tooling, **Shop Scanner**, hangar, corvettes, companions, reputation, languages, trade log, wonders, waypoints, timers, session history |
+| **0.3** (this) | **Station brief from the cockpit**, upgrade plan, price memory across shops, command-line bridge for non-MCP assistants |
+| **0.4** | Game-data knowledge base extracted from your own game files (recipes, products, technology, blueprint costs) → `nms_craftable`, full item names, mission text |
+| **0.5** | Galaxy intelligence: economy / wealth / conflict / race for **unvisited** systems from the address (community-verified seed algorithms) → `nms_find_systems` |
+| later | Xbox / Game Pass saves; alerts when a timer is ready |
 
 ### Ideas on the board
 
-- **Shop price memory → best deal finder.** With enough scans: "cheapest place I've seen Warp Cells" and "is this price good?"
 - **Auto-scan on dock.** Watch the save for a station dock and prompt "want me to scan the shops?"
 - **Mission board reader.** Scan the board and rank missions by nanite and units payout per minute.
-- **Buy-list planner.** "I want S-class jetpack upgrades": compare your installed modules against every scanned shop and route you there.
+- **Route to the upgrade.** Chain the upgrade plan into the route planner: "take me to the nearest scanned station with an S-class hyperdrive".
+- **Sell list.** Once game data lands (0.4), "what in my inventory is worth the most at this terminal?"
 - **Expedition helper.** Read the expedition milestone screen and track what's left.
 - **Phone companion.** Ask from your phone through Claude's remote access while the game stays full-screen.
 
@@ -288,6 +315,8 @@ src/nms_direct_link/
     model.py       typed save view
   shops.py         Shop Scanner capture (window / Steam F12) + SQLite store
   tools_shops.py   Shop Scanner MCP tools
+  planner.py       upgrade gaps, station brief, price memory
+  tools_station.py station brief / upgrade plan / best prices tools
   data/            mapping.json (+ its LGPL-3.0 licence)
 tests/             synthetic-fixture suite + optional real-save smoke test
 ```
@@ -314,7 +343,8 @@ NMS_SMOKE_SAVE="%APPDATA%\HelloGames\NMS\st_<id>\save.hg" pytest tests/test_real
 | `pydantic` 2 | Validated tool inputs |
 | `httpx` | Community mission lookup, mapping updates |
 | `Pillow` | Shop Scanner screenshots |
-| SQLite (stdlib) | Scanned-shops database |
+| SQLite (stdlib) | Scanned-shops database and price memory |
+| `argparse` CLI | Command-line bridge (`--list-tools`, `--call`) for non-MCP assistants |
 | MBINCompiler `mapping.json` | Save key de-obfuscation |
 
 ## ◆ Credits
