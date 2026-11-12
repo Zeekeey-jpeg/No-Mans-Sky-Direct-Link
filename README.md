@@ -11,6 +11,8 @@
   <a href="LICENSE"><img alt="MIT" src="https://img.shields.io/badge/license-MIT-blue"></a>
 </p>
 
+[![M8ven Score](https://m8ven.ai/badge/mcp/zeekeey-jpeg-no-mans-sky-direct-link-1emc87?v=b52bc7a9e15abfe1e46e72fd7589a24e)](https://m8ven.ai/mcp/zeekeey-jpeg-no-mans-sky-direct-link-1emc87?s=readme)
+
 # No Man's Sky Direct Link — MCP server for No Man's Sky
 
 <h3 align="center">Give your AI assistant full visibility into your No Man's Sky game.</h3>

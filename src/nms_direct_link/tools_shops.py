@@ -12,8 +12,8 @@ READ_HINT = (
 )
 
 
-def register(mcp, store, ResponseFormat, ToolAnnotations, _fmt, _err, _n, _snap, _ly):  # noqa: N803
-    read_only = {"read_only_hint": True, "destructive_hint": False, "idempotent_hint": False, "open_world_hint": False}
+def register(mcp, store, ResponseFormat, ToolAnnotations, READ_ONLY, _fmt, _err, _n, _snap, _ly):  # noqa: N803
+    # Re-logging the same merchant in the same system replaces the earlier list.
     writes_local = {"read_only_hint": False, "destructive_hint": True, "idempotent_hint": False, "open_world_hint": False}
 
     class LookInput(BaseModel):
@@ -21,7 +21,7 @@ def register(mcp, store, ResponseFormat, ToolAnnotations, _fmt, _err, _n, _snap,
         target: str = Field(default="game", pattern="^(game|screen)$", description="'game' = the No Man's Sky window, 'screen' = everything")
         max_width: int = Field(default=1600, ge=640, le=3840, description="Downscale to this width (smaller = fewer tokens)")
 
-    @mcp.tool(name="nms_look_at_screen", annotations=ToolAnnotations(title="Look at the game screen", **read_only))
+    @mcp.tool(name="nms_look_at_screen", annotations=ToolAnnotations(title="Look at the game screen", **READ_ONLY))
     async def nms_look_at_screen(params: LookInput) -> list:
         """Shop Scanner, step 1: take a screenshot of the No Man's Sky window right now and return it so you can read it.
         Only the game window is captured; if it is not found nothing is captured unless target='screen' is passed.
@@ -47,7 +47,7 @@ def register(mcp, store, ResponseFormat, ToolAnnotations, _fmt, _err, _n, _snap,
         within_minutes: float = Field(default=120, gt=0, le=100000, description="Only screenshots taken in this window")
         max_width: int = Field(default=1400, ge=640, le=3840)
 
-    @mcp.tool(name="nms_read_screenshots", annotations=ToolAnnotations(title="Read my F12 screenshots", **read_only))
+    @mcp.tool(name="nms_read_screenshots", annotations=ToolAnnotations(title="Read my F12 screenshots", **READ_ONLY))
     async def nms_read_screenshots(params: ScreenshotsInput) -> list:
         """Shop Scanner without alt-tabbing: press Steam's F12 at each shop while you play, then ask once.
         Returns your newest No Man's Sky Steam screenshots (or NMS_SCREENSHOT_DIR) as images to read and log."""
@@ -114,7 +114,7 @@ def register(mcp, store, ResponseFormat, ToolAnnotations, _fmt, _err, _n, _snap,
         limit: int = Field(default=25, ge=1, le=200)
         response_format: ResponseFormat = Field(default=ResponseFormat.MARKDOWN)
 
-    @mcp.tool(name="nms_find_in_shops", annotations=ToolAnnotations(title="Search scanned shops", **read_only))
+    @mcp.tool(name="nms_find_in_shops", annotations=ToolAnnotations(title="Search scanned shops", **READ_ONLY))
     async def nms_find_in_shops(params: FindInput) -> str:
         """Search every shop you have scanned: "where did I see an S-class hyperdrive module under 600 nanites?".
         Results are nearest first, with glyphs, merchant, price and how long ago you saw it."""
@@ -139,7 +139,7 @@ def register(mcp, store, ResponseFormat, ToolAnnotations, _fmt, _err, _n, _snap,
         portal: str | None = Field(default=None, max_length=16, description="12 glyphs; default = where you are now")
         response_format: ResponseFormat = Field(default=ResponseFormat.MARKDOWN)
 
-    @mcp.tool(name="nms_get_shops_here", annotations=ToolAnnotations(title="Shops scanned in a system", **read_only))
+    @mcp.tool(name="nms_get_shops_here", annotations=ToolAnnotations(title="Shops scanned in a system", **READ_ONLY))
     async def nms_get_shops_here(params: ShopsHereInput) -> str:
         """Quick view of every shop you have scanned in this system (or a given portal address): merchant by
         merchant, what they sold and for how much, and how long ago you looked."""

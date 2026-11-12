@@ -3,6 +3,15 @@
 All notable changes to No Man's Sky Direct Link are recorded here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses semantic versioning.
 
+## [Unreleased]
+
+### Added
+- Personalized [M8ven](https://m8ven.ai/mcp/zeekeey-jpeg-no-mans-sky-direct-link-1emc87?s=readme) verification badge in the README (valid until 30 Nov 2026).
+- A registry test that every one of the 37 tools advertises all four MCP tool hints (`readOnlyHint`, `destructiveHint`, `idempotentHint`, `openWorldHint`) as explicit booleans.
+
+### Changed
+- Shop Scanner tools now share the same read-only hint set as the save readers (`idempotentHint` is true). `nms_log_shop` stays a local write: `readOnlyHint` false, `destructiveHint` true (re-logging a merchant replaces the earlier list), `idempotentHint` false, `openWorldHint` false. `nms_get_community_mission` remains the only tool with `openWorldHint` true.
+
 ## [0.3.0] — 2026-11-08
 
 Built around docking and staying in the cockpit. 37 tools, 3 resources.
