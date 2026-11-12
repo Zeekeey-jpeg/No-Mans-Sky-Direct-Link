@@ -493,7 +493,7 @@ tools_more.register(mcp, store, FormatInput, ResponseFormat, ToolAnnotations, RE
 
 from . import tools_shops  # noqa: E402
 
-tools_shops.register(mcp, store, ResponseFormat, ToolAnnotations, _fmt, _err, _n, _snap, _ly)
+tools_shops.register(mcp, store, ResponseFormat, ToolAnnotations, READ_ONLY, _fmt, _err, _n, _snap, _ly)
 
 from . import tools_station  # noqa: E402
 

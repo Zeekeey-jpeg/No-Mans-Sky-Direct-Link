@@ -98,7 +98,14 @@ async def test_log_elsewhere_by_portal(fresh):
 
 async def test_shop_tool_annotations():
     tools = {t.name: t for t in await server.mcp.list_tools()}
-    assert tools["nms_log_shop"].annotations.read_only_hint is False
-    assert tools["nms_log_shop"].annotations.destructive_hint is True  # re-logging replaces the earlier list
+    log = tools["nms_log_shop"].annotations
+    assert log.read_only_hint is False
+    assert log.destructive_hint is True  # re-logging replaces the earlier list
+    assert log.idempotent_hint is False
+    assert log.open_world_hint is False
     for n in ("nms_look_at_screen", "nms_read_screenshots", "nms_find_in_shops", "nms_get_shops_here"):
-        assert tools[n].annotations.read_only_hint is True
+        ann = tools[n].annotations
+        assert ann.read_only_hint is True
+        assert ann.destructive_hint is False
+        assert ann.idempotent_hint is True
+        assert ann.open_world_hint is False

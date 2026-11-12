@@ -34,10 +34,36 @@ async def test_tool_registry_names():
         "nms_look_at_screen", "nms_read_screenshots", "nms_log_shop", "nms_find_in_shops", "nms_get_shops_here",
         "nms_station_brief", "nms_upgrade_plan", "nms_best_prices",
     ])
+    assert len(tools) == 37
+    hints = ("read_only_hint", "destructive_hint", "idempotent_hint", "open_world_hint")
     for t in tools:
-        assert t.annotations is not None
-        assert t.annotations.read_only_hint is (t.name != "nms_log_shop")
-        assert t.annotations.destructive_hint is (t.name == "nms_log_shop")
+        assert t.annotations is not None, t.name
+        for hint in hints:
+            value = getattr(t.annotations, hint)
+            assert isinstance(value, bool), f"{t.name}.{hint} should be an explicit bool, got {value!r}"
+        if t.name == "nms_log_shop":
+            # Re-logging a merchant replaces the earlier list in the local shop cache.
+            assert t.annotations.read_only_hint is False
+            assert t.annotations.destructive_hint is True
+            assert t.annotations.idempotent_hint is False
+            assert t.annotations.open_world_hint is False
+        elif t.name == "nms_get_community_mission":
+            assert t.annotations.read_only_hint is True
+            assert t.annotations.destructive_hint is False
+            assert t.annotations.idempotent_hint is True
+            assert t.annotations.open_world_hint is True
+        else:
+            # Save readers, shop searches, and screenshot capture are read-only and local.
+            # Session history.jsonl is written as a best-effort side effect of SaveStore.snapshot(),
+            # not by nms_get_session_changes itself.
+            assert t.annotations.read_only_hint is True
+            assert t.annotations.destructive_hint is False
+            assert t.annotations.idempotent_hint is True
+            assert t.annotations.open_world_hint is False
+        # Wire form uses camelCase aliases required by the MCP spec / OpenAI directory.
+        wire = t.model_dump(by_alias=True, exclude_none=True).get("annotations") or {}
+        for camel in ("readOnlyHint", "destructiveHint", "idempotentHint", "openWorldHint"):
+            assert camel in wire and isinstance(wire[camel], bool), f"{t.name} missing {camel} on the wire: {wire}"
 
 
 async def test_list_saves(fresh_store):
